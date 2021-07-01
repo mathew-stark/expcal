@@ -17,7 +17,6 @@ class Charts extends StatelessWidget {
         if (DateFormat.yMd().format(y.date) ==
             DateFormat.yMd().format(weekDay)) {
           amount = amount + y.amount;
-          print(amount);
         }
       }
       return {
@@ -35,36 +34,46 @@ class Charts extends StatelessWidget {
   //   return total;
   // }
 
-  double get totalAmount{
-    return previousDays.fold(0.0, (previousValue, element) => previousValue + element['amount']);
+  double get totalAmount {
+    return previousDays.fold(
+        0.0, (previousValue, element) => previousValue + element['amount']);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        elevation: 20,
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 6,),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text('Spending',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          child: Card(
+            elevation: 20,
+            margin: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ignore: prefer_const_constructors
+                SizedBox(
+                  height: 1
+                ),
+                const Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text('Spending',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: previousDays
+                        .map((y) => ChartBar(
+                            y,
+                            totalAmount == null || y['amount'] == null
+                                ? 0
+                                : (y['amount'] as double) / totalAmount))
+                        .toList())
+              ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: previousDays
-                    .map((y) => ChartBar(
-                        y,
-                        totalAmount == null || y['amount'] == null
-                            ? 0
-                            : (y['amount'] as double) / totalAmount))
-                    .toList())
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

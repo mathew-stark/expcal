@@ -7,8 +7,8 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
         margin: EdgeInsets.all(2),
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Text(
@@ -50,7 +50,9 @@ class ChartBar extends StatelessWidget {
               ))),
               SizedBox(height: 6,)
         ]),
-      ),
-    );
+      );
+    },);
+
+    
   }
 }
