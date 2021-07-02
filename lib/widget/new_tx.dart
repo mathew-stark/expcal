@@ -17,6 +17,7 @@ class _NewTxState extends State<NewTx> {
   DateTime date = DateTime.now();
 
   showAlertDialog(BuildContext context) {
+
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
@@ -46,14 +47,18 @@ class _NewTxState extends State<NewTx> {
 
   valCheck() {
     final title = titleInput.text;
-    final amount = titleInput.text;
-    if (title.isEmpty ||
-        amount == null ||
-        double.parse(amountInput.text) <= 0) {
+    final amount = amountInput.text;
+    bool isNumeric(String amount) {
+    if (amount == null) {
+      return false;
+    }
+    return double.tryParse(amount) != null;
+    }
+    if (title.isEmpty || !isNumeric(amount)) {
       showAlertDialog(context);
       return;
     }
-    widget.execute(titleInput.text, double.parse(amountInput.text), date);
+    widget.execute(titleInput.text, double.parse(amount), date);
     Navigator.of(context).pop();
   }
 
