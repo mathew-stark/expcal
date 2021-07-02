@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.0.6
   sqflite:
   path:
+  flutter_markdown: ^0.6.2
 
 dev_dependencies:
   flutter_test:

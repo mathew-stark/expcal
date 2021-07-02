@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import './widget/new_tx.dart';
 import './widget/customcard.dart';
 import './widget/charts.dart';
 
 import './method/tx.dart';
+import './method/decode.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +17,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,13 +37,32 @@ class Expcal extends StatefulWidget {
 
 String currency;
 bool _showchartvar = false;
+int t;
+List<Tx> x = [];
+
+List<String> y = [
+  Tx(
+          title: 'Title of your transaction',
+          amount: 10.10,
+          date: DateTime.now(),
+          id: '0')
+      .toString()
+];
 
 class _ExpcalState extends State<Expcal> {
+  static const String markdownSource = ''' # ***how to use?***
+  ---
+  * ## Click on Add
+  * ## Enter the details
+  * ## Click add transaction
+  * ## toggle the top switch for insights''';
+
   @override
   void initState() {
     super.initState();
     _showchart();
     _currency();
+    _y();
   }
 
   void _showchart() async {
@@ -51,6 +71,7 @@ class _ExpcalState extends State<Expcal> {
       _showchartvar = (prefs.getBool('showchart') ?? false);
     });
   }
+
   void _currency() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -58,7 +79,32 @@ class _ExpcalState extends State<Expcal> {
     });
   }
 
-  void showchart(bool val) async{
+  void _y() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      y = prefs.getStringList('y') ??
+          [
+            Tx(
+                    title: 'Title of your transaction',
+                    amount: 10.10,
+                    date: DateTime.now(),
+                    id: '0')
+                .toString()
+          ];
+      x = Decode().toList(y);
+    });
+  }
+
+  void _addy(String z) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      y.add(z);
+      x.add(Decode().decode(z));
+      prefs.setStringList('y', y);
+    });
+  }
+
+  void showchart(bool val) async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _showchartvar = val;
@@ -88,113 +134,88 @@ class _ExpcalState extends State<Expcal> {
 
   addTransaction(String title, double amount, DateTime date) {
     final newtx = (Tx(
-        title: title,
-        amount: amount,
-        date: date,
-        id: DateTime.now().toString()));
-    setState(() => (x.add(newtx)));
+            title: title,
+            amount: amount,
+            date: date,
+            id: DateTime.now().toString()))
+        .toString();
+    _addy(newtx);
   }
 
-  removeTransaction(int x) {
-    setState(() => this.x.removeAt(x));
+  removeTransaction(int xz) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      y.removeAt(xz);
+      prefs.setStringList('y', y);
+      x.removeAt(xz);
+    });
   }
-
-  final List<Tx> x = [
-    Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0'), Tx(
-        title: 'Title of your transaction',
-        amount: 10.10,
-        date: DateTime.now(),
-        id: '0')
-  ];
 
   getInput(BuildContext ctx) {
     showModalBottomSheet(
+        isScrollControlled: true,
         context: ctx,
         builder: (_) {
           return Container(
+              height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
               child: GestureDetector(
                   onTap: () {},
                   behavior: HitTestBehavior.opaque,
                   child: NewTx(addTransaction)));
         });
   }
+
   @override
   Widget build(BuildContext context) {
     final appbar = AppBar(
-        actions: [
-          Switch(value: _showchartvar, onChanged: (val) => showchart(val)),
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-            onPressed: _currencyCounter,
-          )
-        ],
-        title: const Text('expcaL'),
-      );
+      actions: [
+        Switch(value: _showchartvar, onChanged: (val) => showchart(val)),
+        IconButton(
+          icon: Icon(
+            Icons.settings,
+            color: Colors.black,
+          ),
+          onPressed: _currencyCounter,
+        )
+      ],
+      title: const Text('expcaL'),
+    );
     return Scaffold(
       appBar: appbar,
       body: (x.isEmpty)
-          ? Center(
-              child: Container(
-                  margin: EdgeInsets.all(120),
-                  child: Image.asset('images/waiting.png')))
+          ? Container(margin: EdgeInsets.only(top: 40,left: 25), child: Center(child: Markdown(data: markdownSource)))
           : SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(children: [
-                _showchartvar ? Container(
-                  height:  (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * .26,
-                  child: Charts(previousTx)) : 
-                Container(
-                  height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top),
-                  child: ListView.builder(
-                      itemCount: x.length,
-                      itemBuilder: (ctx, index) {
-                        return CustomCard(
-                          y: x[index],
-                          currency: currency,
-                          removeTransaction: () => removeTransaction(index),
-                        );
-                      }),
-                ),
+                _showchartvar
+                    ? Container(
+                        height: (MediaQuery.of(context).size.height -
+                                appbar.preferredSize.height -
+                                MediaQuery.of(context).padding.top) *
+                            .32,
+                        child: Charts(previousTx))
+                    : Container(
+                        height: (MediaQuery.of(context).size.height -
+                            appbar.preferredSize.height -
+                            MediaQuery.of(context).padding.top),
+                        child: ListView.builder(
+                            itemCount: x.length,
+                            itemBuilder: (ctx, index) {
+                              return CustomCard(
+                                y: x[index],
+                                currency: currency,
+                                removeTransaction: () =>
+                                    removeTransaction(index),
+                              );
+                            }),
+                      ),
               ]),
             ),
       floatingActionButton: FloatingActionButton(
         focusColor: Theme.of(context).primaryColorLight,
-        child: Text('Add'),
+        child: Icon(Icons.add),
+        mini: true,
+        
         onPressed: () => getInput(context),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

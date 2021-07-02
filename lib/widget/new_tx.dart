@@ -59,16 +59,18 @@ class _NewTxState extends State<NewTx> {
 
   void chooseDate() {
     showDatePicker(
+
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2000),
             lastDate: DateTime.now())
-        .then((value) => setState(() => date = value));
+        .then((value) => setState(() => date = value ?? DateTime.now()));
   }
 
   @override
   Widget build(BuildContext context) {
     return (Container(
+      height: MediaQuery.of(context).size.height,
       margin: const EdgeInsets.all(10),
       child: Container(
         margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
