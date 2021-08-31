@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 2.0.0+7
 
 environment:
   sdk: ">=2.11.0 <3.0.0"
@@ -37,13 +37,38 @@ dependencies:
   intl: ^0.17.0
   flutter_icons: ^1.1.0
   shared_preferences: ^2.0.6
-  sqflite:
-  path:
-  flutter_markdown: ^0.6.2
+  # flutter_markdown: ^0.6.2
+  pdf:
+  path_provider:
+  open_file:
+  flutter_signin_button:
+
+  google_sign_in: ^5.0.4
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  cached_network_image: ^3.1.0
+  provider: ^5.0.0
+  currency_picker: ^1.0.3
+  fluttertoast: ^8.0.7
+  # firebase_messaging: ^10.0.4
+  # flutter_local_notifications: ^6.0.0  
+  googleapis: ^4.0.0
+  http: ^0.13.3
+  # file_picker: ^3.0.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons:
+
+
+flutter_icons:
+  android: true
+  image_path: "ic/ic_launcher-web.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "ic/playstore-icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -66,6 +91,14 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/waiting.png
+    - ic/group.png
+    - ic/checkmark.png
+    - ic/delete.png
+    - ic/greendot.png
+    - ic/exportpdf.png
+    - ic/profile.png
+    - ic/logout.png
+    - ic/logout_dark.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

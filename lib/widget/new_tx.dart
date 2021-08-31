@@ -1,5 +1,9 @@
+import 'package:expcal/widget/show_custom_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+// import 'package:provider/provider.dart';
+// import '../app_theme.dart';
 
 // ignore: use_key_in_widget_constructors
 class NewTx extends StatefulWidget {
@@ -15,56 +19,98 @@ class _NewTxState extends State<NewTx> {
   final titleInput = TextEditingController();
   final amountInput = TextEditingController();
   DateTime date = DateTime.now();
+  bool popNavigator = false;
+  FocusNode _focusNode;
 
-  showAlertDialog(BuildContext context) {
+  @override
+  void initState() {
+    super.initState();
 
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      elevation: 20,
-      title: Text("Message"),
-      content: Text("Enter a valid amount"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    _focusNode = FocusNode();
   }
+
+  // showAlertDialog(BuildContext context, String content) {
+  //   // set up the button
+  //   Widget okButton = TextButton(
+  //     child: Text("OK"),
+  //     onPressed: () {
+  //       Navigator.of(context).pop();
+  //     },
+  //   );
+
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     elevation: 20,
+  //     title: Text("Invalid Input"),
+  //     content: Text(content),
+  //     actions: [
+  //       okButton,
+  //     ],
+  //   );
+
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   valCheck() {
     final title = titleInput.text;
     final amount = amountInput.text;
     bool isNumeric(String amount) {
-    if (amount == null) {
-      return false;
+      if (amount == null) {
+        return false;
+      }
+      return double.tryParse(amount) != null;
     }
-    return double.tryParse(amount) != null;
+
+    if (title.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Enter a title",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).textTheme.bodyText1.color,
+        fontSize: 16.0
+    );
+      return;
     }
-    if (title.isEmpty || !isNumeric(amount)) {
-      showAlertDialog(context);
+    if (!isNumeric(amount)) {
+      Fluttertoast.showToast(
+        msg: "Check the amount",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).textTheme.bodyText1.color,
+        fontSize: 16.0
+    );
       return;
     }
     widget.execute(titleInput.text, double.parse(amount), date);
-    Navigator.of(context).pop();
+    if (!popNavigator){Navigator.of(context).pop();
+    };
+    Fluttertoast.showToast(
+        msg: "Added",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).textTheme.bodyText1.color,
+        fontSize: 16.0
+    );
+    if(popNavigator){titleInput.clear();
+    amountInput.clear();
+    _focusNode.requestFocus();
+    }
   }
 
   void chooseDate() {
     showDatePicker(
-
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(2000),
@@ -74,6 +120,7 @@ class _NewTxState extends State<NewTx> {
 
   @override
   Widget build(BuildContext context) {
+    FocusNode titlefocus;
     return (Container(
       height: MediaQuery.of(context).size.height,
       margin: const EdgeInsets.all(10),
@@ -84,10 +131,12 @@ class _NewTxState extends State<NewTx> {
           // ignore: prefer_const_literals_to_create_immutables
           children: [
             Card(
-              elevation: 20,
+              elevation: 12,
               child: Container(
                 margin: EdgeInsets.only(left: 10),
                 child: TextField(
+                  focusNode: _focusNode,
+                  autofocus: true,
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -97,7 +146,7 @@ class _NewTxState extends State<NewTx> {
               ),
             ),
             Card(
-              elevation: 20,
+              elevation: 12,
               child: Container(
                 margin: EdgeInsets.only(left: 10),
                 child: TextField(
@@ -109,37 +158,51 @@ class _NewTxState extends State<NewTx> {
             ),
             Row(
               children: [
+                Text('date :', style: Theme.of(context).textTheme.bodyText1),
                 Flexible(
                   fit: FlexFit.tight,
                   child: Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                          EdgeInsets.symmetric(horizontal: 3, vertical: 20),
                       child: Text(
-                        'date: ${date == null ? 'not choosen' : DateFormat.yMMMd().format(date)}',
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        '${date == null ? 'not choosen' : DateFormat.yMMMd().format(date)}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .caption
+                            .copyWith(fontSize: 16),
                       )),
                 ),
                 TextButton(
                     onPressed: () => chooseDate(),
-                    child: Text(
-                      'Choose Date',
-                      style: TextStyle(fontSize: 20, color: Colors.green[900]),
-                    ))
+                    child: Text('Choose Date',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(fontSize: 19)))
               ],
             ),
-            TextButton(
-              onPressed: valCheck,
-              child: const Text(
-                'Add Transaction',
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              style: ButtonStyle(
-                  enableFeedback: true,
-                  foregroundColor:
-                      MaterialStateProperty.all(Colors.green[900])),
-            )
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Switch(
+                  value: popNavigator,
+                  onChanged: (x) {
+                    setState(() {
+                      popNavigator = x;
+                    });
+                  }),
+              TextButton(
+                onPressed: (){valCheck();
+                FocusScope.of(context).requestFocus(titlefocus);},
+                child: Text('Add Transaction',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        .copyWith(fontSize: 19)),
+                // style: ButtonStyle(
+                //     enableFeedback: true,
+                //     foregroundColor:
+                //         MaterialStateProperty.all(Colors.green[900])),
+              )
+            ]),
           ],
         ),
       ),

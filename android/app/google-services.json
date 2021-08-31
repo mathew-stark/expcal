@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "114933154027",
+    "project_id": "expcal-1c162",
+    "storage_bucket": "expcal-1c162.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114933154027:android:55013c4511e5e26448feae",
+        "android_client_info": {
+          "package_name": "site.costcut.expcal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "114933154027-p5a2d1al2255bdcu5941e91kjdbtrkj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "site.costcut.expcal",
+            "certificate_hash": "658ea3f3a710d5046816d9efb0cf90883856e5ac"
+          }
+        },
+        {
+          "client_id": "114933154027-qprveaf3kgek45t8mg8lkedvoc6i4fpq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3GbpteiEHwkSsXMIy9i5tiuyE2Lw1Qew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "114933154027-qprveaf3kgek45t8mg8lkedvoc6i4fpq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

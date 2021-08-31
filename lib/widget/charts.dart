@@ -1,12 +1,15 @@
 import 'package:expcal/method/tx.dart';
 import 'package:expcal/widget/chart_bar.dart';
 import 'package:expcal/widget/customtext.dart';
+import 'package:expcal/widget/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Charts extends StatelessWidget {
   final List<Tx> x;
-  Charts(this.x);
+  final String currency;
+  // ignore: use_key_in_widget_constructors
+  const Charts(this.x, this.currency);
 
   List<Map<String, Object>> get previousDays {
     return List.generate(6, (index) {
@@ -23,7 +26,7 @@ class Charts extends StatelessWidget {
         'day': DateFormat.E().format(weekDay).substring(0, 3),
         'amount': amount,
       };
-    }).reversed.toList();
+    }).toList();
   }
 
   // double get totalAmount {
@@ -35,45 +38,69 @@ class Charts extends StatelessWidget {
   // }
 
   double get totalAmount {
-    return previousDays.fold(
-        0.0, (previousValue, element) => previousValue + element['amount']);
+    return x.fold(
+        0.0, (previousValue, element) => previousValue + element.amount);
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          child: Card(
-            elevation: 20,
-            margin: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ignore: prefer_const_constructors
-                SizedBox(
-                  height: 1
-                ),
-                const Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Text('Spending',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: previousDays
-                        .map((y) => ChartBar(
-                            y,
-                            totalAmount == null || y['amount'] == null
-                                ? 0
-                                : (y['amount'] as double) / totalAmount))
-                        .toList())
-              ],
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      // height: MediaQuery.of(context).size.height -
+      //     MediaQuery.of(context).padding.top,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Tile(
+            // width: MediaQuery.of(context).size.width * .51,
+            // height: MediaQuery.of(context).size.height * .48,
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(6),
+                      child: Text('Recent Spending',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                        left: 0,
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: previousDays.map((y) => ChartBar(y, currency
+                              // totalAmount == null || y['amount'] == null
+                              //     ? 0
+                              //     : (y['amount'] as double) / totalAmount
+                              )).toList()),
+                    ),
+                  ]),
             ),
           ),
-        );
-      },
+          Tile(
+            // height: MediaQuery.of(context).size.height * .2,
+            // width: MediaQuery.of(context).size.width * .49,
+            content:
+                Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Padding(
+                padding: const EdgeInsets.all(6),
+                child: Text('Total Spending',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            ),
+                            Padding(
+                  padding: const EdgeInsets.all(10),
+                  // ignore: unnecessary_string_interpolations
+                  child: Text('${totalAmount.toString()} $currency', style: Theme.of(context).textTheme.headline2,)),
+                          ]),
+          )
+        ],
+      ),
     );
   }
 }

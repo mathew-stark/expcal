@@ -1,4 +1,4 @@
-package com.example.expcal
+package site.costcut.expcal
 
 import io.flutter.embedding.android.FlutterActivity
 
