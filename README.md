@@ -1,6 +1,6 @@
-# expcal
+# Expcal
 
-A new Flutter project.
+A Expense Tracking Flutter project.
 
 ## Getting Started
 
