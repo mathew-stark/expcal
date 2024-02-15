@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:currency_picker/currency_picker.dart';
-import 'package:expcal/app_theme.dart';
+import 'package:expcal/theme_notifier.dart';
 import 'package:expcal/main.dart';
 import 'package:expcal/widget/show_custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -411,16 +411,16 @@ class _DrawableState extends State<Drawable> {
                         ),
                   ),
                 Spacer(),
-                // IconButton(
-                //     onPressed: () {
-                //       themeProvider.toggleTheme();
-                //     },
-                //     icon: !themeProvider.themeData
-                //         ? Icon(
-                //             Icons.dark_mode_outlined,
-                //             color: Colors.white,
-                //           )
-                //         : Icon(Icons.dark_mode_rounded)),
+                IconButton(
+                    onPressed: () {
+                      themeProvider.toggleTheme();
+                    },
+                    icon: !themeProvider.themeData
+                        ? Icon(
+                            Icons.dark_mode_outlined,
+                            color: Colors.white,
+                          )
+                        : Icon(Icons.dark_mode_rounded)),
                 TextButton(
                   child: Text(
                     currency,

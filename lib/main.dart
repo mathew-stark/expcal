@@ -21,7 +21,7 @@ import './widget/charts.dart';
 import './method/tx.dart';
 import './method/decode.dart';
 // import 'GoogleAuthClient.dart';
-import 'app_theme.dart';
+import 'theme_notifier.dart';
 import 'method/pdf_api.dart';
 
 void main() {
@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => AppThemeData(),
+        create: (context) => ThemeNotifier(),
         builder: (context, _) {
-          final themeProvider = Provider.of<AppThemeData>(context);
+          final themeProvider = Provider.of<ThemeNotifier>(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             themeMode: themeProvider.theme,
@@ -385,7 +385,7 @@ class _ExpcalState extends State<Expcal> {
   }
 
   getInput(BuildContext ctx) {
-    final themeProvider = Provider.of<AppThemeData>(context, listen: false);
+    final themeProvider = Provider.of<ThemeNotifier>(context, listen: false);
     showModalBottomSheet(
         backgroundColor: !themeProvider.themeData ? Colors.grey[850] : null,
         isScrollControlled: true,

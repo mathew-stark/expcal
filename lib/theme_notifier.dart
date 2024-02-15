@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ThemeNotifier with ChangeNotifier {
-  ThemeMode theme = ThemeMode.system;
+  ThemeMode theme = ThemeMode.dark;
   bool get themeData => theme == ThemeMode.light;
 
   ThemeData _themeData;
 
-  ThemeNotifier(this._themeData);
+  // ThemeNotifier(this._themeData);
 
   getTheme() => _themeData;
 
@@ -16,10 +16,10 @@ class ThemeNotifier with ChangeNotifier {
 
   
 
-  // toggleTheme() {
-  //   theme = theme == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-  //   notifyListeners();
-  // }
+  }
+  toggleTheme() {
+    theme = theme == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
 }
 }
 class AppTheme {
